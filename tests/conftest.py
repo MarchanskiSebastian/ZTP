@@ -13,7 +13,10 @@ def _row_counts() -> tuple[int, ...]:
     with engine.connect() as conn:
         return tuple(
             conn.execute(text(f"SELECT count(*) FROM {t}")).scalar_one()
-            for t in ("products", "product_history", "categories", "notifications")
+            for t in (
+                "products", "product_history", "categories", "notifications", "users",
+                "user_sessions", "cart_items", "orders", "order_items", "processed_commands",
+            )
         )
 
 

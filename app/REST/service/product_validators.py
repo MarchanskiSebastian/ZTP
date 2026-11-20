@@ -24,6 +24,14 @@ class ResourceNotFoundError(Exception):  # 400 - reference to a missing related 
     pass
 
 
+class NotFoundError(Exception):  # 404 - the requested resource itself does not exist
+    pass
+
+
+class UnauthorizedError(Exception):  # 401 - no valid session
+    pass
+
+
 def validate_name_format(name: str) -> None:
     if not (3 <= len(name) <= 20):
         raise ValidationError("Nazwa produktu musi mieć od 3 do 20 znaków.")
