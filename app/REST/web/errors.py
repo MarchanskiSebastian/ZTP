@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 
 from app.REST.service.product_validators import (
     ConflictError,
@@ -8,7 +9,8 @@ from app.REST.service.product_validators import (
 )
 
 # Domain exception -> HTTP status code
-_STATUS = {ValidationError: 422, ConflictError: 409, ResourceNotFoundError: 400}
+# IntegrityError: e.g. two concurrent POSTs with the same idempotency_key
+_STATUS = {ValidationError: 422, ConflictError: 409, ResourceNotFoundError: 400, IntegrityError: 409}
 
 
 def register_error_handlers(app: FastAPI) -> None:

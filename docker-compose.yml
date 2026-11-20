@@ -13,5 +13,32 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  # EMAIL channel: SMTP on 1025, web inbox on http://localhost:8025
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # PUSH channel: http://localhost:8080/<topic> (subscribe in browser or ntfy app)
+  ntfy:
+    image: binwiederhier/ntfy:v2.11.0
+    container_name: ntfy
+    command: serve
+    ports:
+      - "8080:80"
+
+  # Scrapes the API's /metrics; UI on http://localhost:9090
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # the API runs on the host (uvicorn)
+
 volumes:
   pgdata:

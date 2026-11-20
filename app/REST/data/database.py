@@ -14,7 +14,8 @@ DATABASE_URL = (
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-engine = create_engine(DATABASE_URL, echo=False)
+# Session time zone UTC: TIMESTAMPTZ values come back as UTC datetimes
+engine = create_engine(DATABASE_URL, echo=False, connect_args={"options": "-c timezone=utc"})
 
 
 # Base class for all ORM models

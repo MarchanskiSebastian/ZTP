@@ -9,11 +9,11 @@ from app.REST.data.database import engine, get_db
 from main import app
 
 
-def _row_counts() -> tuple[int, int, int]:
+def _row_counts() -> tuple[int, ...]:
     with engine.connect() as conn:
         return tuple(
             conn.execute(text(f"SELECT count(*) FROM {t}")).scalar_one()
-            for t in ("products", "product_history", "categories")
+            for t in ("products", "product_history", "categories", "notifications")
         )
 
 
