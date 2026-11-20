@@ -25,7 +25,12 @@ function AuthForm({ register }) {
 
   if (auth.user) return <Navigate to={from} replace />;
 
-  const set = (name) => (e) => setForm({ ...form, [name]: e.target.value });
+  const set = (name) => (e) => {
+    const next = { ...form, [name]: e.target.value };
+    setForm(next);
+    if (Object.keys(errors).length) setErrors(validateCredentials(next, { register })); // live after 1st submit
+    setApiError(null); // the server's answer referred to the previous input
+  };
 
   async function submit(e) {
     e.preventDefault();
