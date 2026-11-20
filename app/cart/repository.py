@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import delete, select, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.orm import Session, selectinload
 
 from app.cart.model import CartItemORM, OrderORM, ProcessedCommandORM
@@ -74,3 +74,20 @@ def add(db: Session, obj):
     db.add(obj)
     db.flush()
     return obj
+
+
+def count_orders_by_status(db: Session, user_id: int) -> dict[str, tuple[int, float]]:
+    """status -> (number of orders, sum of totals)"""
+    query = (
+        select(OrderORM.status, func.count(), func.coalesce(func.sum(OrderORM.total), 0))
+        .where(OrderORM.user_id == user_id)
+        .group_by(OrderORM.status)
+    )
+    return {status: (count, float(total)) for status, count, total in db.execute(query).all()}
+
+
+def get_recent_orders(db: Session, user_id: int, limit: int, status: str | None = None) -> list[OrderORM]:
+    query = select(OrderORM).where(OrderORM.user_id == user_id)
+    if status:
+        query = query.where(OrderORM.status == status)
+    return list(db.execute(query.order_by(OrderORM.id.desc()).limit(limit)).scalars().all())

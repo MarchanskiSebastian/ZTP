@@ -9,7 +9,8 @@ from app.REST.service.product_validators import NotFoundError
 def get_cart(db: Session, user_id: int) -> Cart:
     lines = [
         CartLine(product_id=i.product_id, name=i.product.name, unit_price=float(i.product.price),
-                 quantity=i.quantity, line_total=float(i.product.price * i.quantity))
+                 quantity=i.quantity, line_total=float(i.product.price * i.quantity),
+                 available=i.product.quantity)
         for i in repo.get_cart_items(db, user_id)
     ]
     return Cart(items=lines, total=round(sum(line.line_total for line in lines), 2))

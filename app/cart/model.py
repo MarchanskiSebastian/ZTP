@@ -98,6 +98,7 @@ class CartLine(BaseModel):
     unit_price: float
     quantity: int
     line_total: float
+    available: int = Field(description="Aktualny stan magazynowy (maks. ilość w koszyku)")
 
 
 class Cart(BaseModel):

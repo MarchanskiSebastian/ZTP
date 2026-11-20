@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.bff.routes import router as bff_router
 from app.cart.routes import cart_router, orders_router
 from app.identity.routes import router as identity_router
 from app.REST.service.worker import run_forever
@@ -23,10 +24,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="ZTP API", lifespan=lifespan)
-for r in (products_router, notification_router, metrics_router, identity_router, cart_router, orders_router):
+for r in (products_router, notification_router, metrics_router, identity_router, cart_router, orders_router,
+          bff_router):
     app.include_router(r)
 register_error_handlers(app)
 add_router_docs(app, [products_router], "/docs/products", "Products API")
 add_router_docs(app, [notification_router], "/docs/notifications", "Notifications API")
 add_router_docs(app, [identity_router], "/identity-docs", "Identity API")
-add_router_docs(app, [cart_router, orders_router], "/cart-docs", "Cart & Orders API")
+add_router_docs(app, [cart_router, orders_router, bff_router], "/cart-docs", "Cart & Orders API")

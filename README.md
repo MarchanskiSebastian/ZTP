@@ -1,4 +1,4 @@
-# ZTP – Products REST API (Lab 1) + Notifications (Projekt 2) + Identity & Cart (Projekt 3)
+# ZTP – Products REST API (Lab 1) + Notifications (Projekt 2) + Identity & Cart (Projekt 3) + Frontend (Projekt 4)
 
 ```powershell
 python -m venv venv
@@ -61,3 +61,17 @@ gotowe w ciągu 1, 2 i 5 minut – w Prometheusie widać, jak `PENDING` maleje, 
   klucz użyty dla innej operacji – 422. Wyniki są w tabeli `processed_commands`.
 - Zakończenie zamówienia tworzy powiadomienia EMAIL (adres użytkownika) i PUSH (temat ntfy `ztp-user-<id>`), wysyła je worker.
 - Zapis: Command Pattern (`commands.py` – komendy, handlery, `execute()`), odczyt: query service (`queries.py`) – CQRS.
+
+## Frontend (`frontend/`, Projekt 4)
+React 18 + React Router + Vite. Wymaga działającego API na porcie 8000.
+
+```powershell
+cd frontend
+npm install
+npm run dev            # http://localhost:5173
+```
+
+- Wszystkie żądania idą przez wspólny klient `src/api.js` na adres `/backend/...`; serwer Vite przekazuje je do FastAPI
+  (proxy), więc przeglądarka widzi jedno źródło i cookie `auth_token` działa bez CORS.
+- Trasy: `/login`, `/register` (publiczne) oraz chronione `/`, `/products`, `/cart`, `/orders`, `/orders/:orderId`.
+- Dashboard korzysta z endpointu BFF `GET /bff/dashboard` (statystyki zamówień, koszyk, ostatnie i anulowane zamówienia).
