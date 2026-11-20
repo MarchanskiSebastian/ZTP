@@ -120,6 +120,7 @@ def test_metrics_prometheus_format(client):
 def test_separate_docs(client):
     products = client.get("/docs/products/openapi.json").json()["paths"]
     notifications = client.get("/docs/notifications/openapi.json").json()["paths"]
-    assert all(p.startswith("/api/v1/products") for p in products)
-    assert all(p.startswith("/api/v1/notifications") for p in notifications)
+    assert "/api/v1/products" in products and "/api/v1/notifications" not in products
+    assert "/api/v1/notifications/{id}/send-now" in notifications
+    assert not any(p.startswith("/api/v1/products") for p in notifications)
     assert client.get("/docs/notifications").status_code == 200
