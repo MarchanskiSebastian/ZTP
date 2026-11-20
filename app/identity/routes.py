@@ -16,7 +16,7 @@ def _set_cookie(response: Response, token: str) -> None:
     )
 
 
-def current_session(response: Response, auth_token: str | None = Cookie(None), db: Session = Depends(get_db)):
+def current_session(response: Response, auth_token: str | None = Cookie(None, include_in_schema=False), db: Session = Depends(get_db)):
     user, session = authenticate(db, auth_token)
     _set_cookie(response, auth_token)  # extended session -> extended cookie
     return user, session
@@ -47,7 +47,7 @@ def get_me(auth=Depends(current_session)):
 
 
 @router.post("/logout", status_code=204)
-def post_logout(response: Response, auth_token: str | None = Cookie(None), db: Session = Depends(get_db)):
+def post_logout(response: Response, auth_token: str | None = Cookie(None, include_in_schema=False), db: Session = Depends(get_db)):
     logout(db, auth_token)
     response.delete_cookie(COOKIE, path="/")
     response.status_code = 204
